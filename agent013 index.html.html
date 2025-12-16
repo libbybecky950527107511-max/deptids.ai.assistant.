@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>中正大學紫荊不分系系網 - AI 客服範例</title>
+
+<style>
+  /* ===== 紫荊暮藍 × 霧灰光（故事型專業配色）===== */
+  :root{
+    --primary: #1C2554;        /* 主色：深藍紫 */
+    --primary-soft: #4A5FBF;   /* Hover / 強調 */
+    --bg-main: #F4F5F8;        /* 全站背景：霧灰白 */
+    --surface: #FFFFFF;        /* 卡片/主區塊底 */
+    --surface-soft: #E8EBF6;   /* Tag/AI 淡底 */
+    --text-main: #1E1F29;      /* 主文字 */
+    --text-soft: #5E637A;      /* 次文字 */
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+
+  body { background-color: var(--bg-main); color: var(--text-main); }
+
+  header {
+    background: var(--primary);
+    color: #fff;
+    padding: 12px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  }
+
+  .logo { font-size: 18px; font-weight: 700; }
+
+  nav a {
+    color: #fff;
+    text-decoration: none;
+    margin-left: 16px;
+    font-size: 14px;
+    opacity: 0.95;
+  }
+  nav a:hover { text-decoration: underline; opacity: 1; }
+
+  main { max-width: 1000px; margin: 24px auto 40px; padding: 0 16px; }
+
+  .hero {
+    background: var(--surface);
+    padding: 24px 24px 20px;
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+    margin-bottom: 24px;
+  }
+
+  .hero h1 { font-size: 22px; margin-bottom: 8px; }
+  .hero p { font-size: 14px; color: var(--text-soft); line-height: 1.6; }
+
+  .tag-row { margin-top: 12px; }
+
+  .tag {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 999px;
+    background: var(--surface-soft);
+    color: var(--primary);
+    font-size: 12px;
+    margin-right: 8px;
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+
+  .card {
+    background: var(--surface);
+    border-radius: 10px;
+    padding: 16px 18px 18px;
+    box-shadow: 0 1px 6px rgba(0,0,0,0.08);
+  }
+
+  .card h2 { font-size: 16px; margin-bottom: 8px; }
+  .card p { font-size: 13px; color: var(--text-soft); line-height: 1.6; }
+  .card ul { margin-top: 6px; margin-left: 16px; }
+  .card li { font-size: 13px; margin-bottom: 4px; }
+
+  .btn-row { margin-top: 10px; }
+
+  .btn {
+    display: inline-block;
+    padding: 6px 14px;
+    border-radius: 999px;
+    border: 1px solid var(--primary);
+    cursor: pointer;
+    font-size: 13px;
+    background: var(--primary);
+    color: #fff;
+    text-decoration: none;
+    transition: background .15s ease, transform .15s ease;
+  }
+  .btn:hover { background: var(--primary-soft); transform: translateY(-1px); }
+
+  .btn.secondary {
+    background: var(--surface-soft);
+    color: var(--primary);
+    border: 1px solid var(--primary);
+  }
+  .btn.secondary:hover { background: #DCE1F3; }
+
+  .btn + .btn { margin-left: 8px; }
+
+  .ai-box {
+    margin-top: 8px;
+    padding: 10px 12px;
+    border-radius: 8px;
+    background: var(--surface-soft);
+    font-size: 13px;
+    color: var(--primary);
+  }
+
+  footer {
+    text-align: center;
+    font-size: 12px;
+    color: #70758A;
+    padding: 16px 0 20px;
+  }
+
+  @media (max-width: 640px) {
+    header { flex-direction: column; align-items: flex-start; }
+    nav { margin-top: 6px; }
+    nav a { margin-left: 0; margin-right: 12px; }
+  }
+</style>
+</head>
+
+<body>
+  <header>
+    <div class="logo">中正大學紫荊不分系</div>
+    <nav>
+      <a href="#intro">系所介紹</a>
+      <a href="#news">最新公告</a>
+      <a href="#admission">招生資訊</a>
+      <a href="#qa">不分系 Q&amp;A</a>
+      <a href="#contact">聯絡方式</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero" id="intro">
+      <h1>紫荊不分系｜系網智慧助理</h1>
+      <p>
+        此頁面可提供給使用者更具便利性與效率的搜尋頁面，讓使用者能夠用最短的時間得到自己所需要的資訊。頁面右下角有「 AI 客服」能夠提供更便捷的搜尋視窗。              </p>
+      <div class="tag-row">
+        <span class="tag">系所資訊</span>
+        <span class="tag">招生說明</span>
+        <span class="tag">AI 客服範例</span>
+      </div>
+    </section>
+
+    <section class="grid">
+      <article class="card" id="news">
+        <h2>最新公告</h2>
+        <p>放置近期重要訊息，例如：</p>
+        <ul>
+          <li>2025-11-18 本學程擬申請自116學年度起更名公告</li>
+          <li>2025-09-22 114學年度第1學期「客製化學程」即日起開放申請</li>
+          <li>2025-09-15 114-1司法心理學分學程錄取名單</li>
+        </ul>
+        <div class="btn-row">
+          <a class="btn" href="https://deptids.ccu.edu.tw/" target="_blank" rel="noopener">查看更多公告</a>
+        </div>
+      </article>
+
+      <article class="card" id="admission">
+        <h2>招生資訊</h2>
+        <p>提供給新生與家長的快速連結：</p>
+        <ul>
+          <li>入學管道與名額說明</li>
+          <li>課程地圖與修課建議</li>
+          <li>常見的申請與審查問題</li>
+        </ul>
+        <div class="btn-row">
+          <a class="btn" href="https://deptids.ccu.edu.tw/p/403-1154-393.php?Lang=zh-tw" target="_blank" rel="noopener">
+            前往招生頁面
+          </a>
+          <a class="btn secondary" href="https://deptids.ccu.edu.tw/p/404-1154-17961.php?Lang=zh-tw" target="_blank" rel="noopener">
+            相關下載表單
+          </a>
+        </div>
+      </article>
+
+      <article class="card" id="qa">
+        <h2>不分系 Q&amp;A</h2>
+        <p>常見問題，例如：</p>
+        <ul>
+          <li>不分系與傳統系所的差異是什麼？</li>
+          <li>不分系畢業證書上的學位如何呈現？</li>
+          <li>不分系大二會分流嗎？</li>
+             </ul>
+        <div class="btn-row">
+          <a class="btn" href="https://deptids.ccu.edu.tw/p/403-1154-2212.php?Lang=zh-tw" target="_blank" rel="noopener">
+            查看更多 Q&amp;A
+          </a>
+        </div>
+      </article>
+
+      <article class="card" id="video">
+        <h2>不分系介紹影片</h2>
+        <p>透過影片更快速理解紫荊不分系的理念、學習方式與學生經驗分享。</p>
+        <div class="btn-row">
+          <a class="btn" href="https://www.youtube.com/watch?app=desktop&amp;v=8kfjvu0XHig" target="_blank" rel="noopener">
+            觀看介紹影片
+          </a>
+        </div>
+      </article>
+
+      <article class="card" id="contact">
+        <h2>聯絡方式</h2>
+        <p>系辦聯絡資訊：</p>
+        <ul>
+          <li>電話：05-2720411#27101#27102</li>
+          <li>Email：deptids@ccu.edu.tw</li>
+          <li>辦公室：共同教室大樓西側210室</li>
+        </ul>
+        <div class="ai-box">
+         還有其他問題嗎? AI 客服視窗在頁面右下角，輸入關鍵字，例如：<br/>
+          「系辦在哪裡?」
+        </div>
+      </article>
+    </section>
+  </main>
+
+  <footer>
+    &copy; 中正大學紫荊不分系 - 本頁面為 AI 客服之第三組
+  </footer>
+
+  <!-- ===== AI 客服 Widget START（只新增這段，不影響上面內容） ===== -->
+  <style>
+    .ai-widget-launcher{
+      position: fixed;
+      right: 18px;
+      bottom: 18px;
+      width: 54px;
+      height: 54px;
+      border-radius: 999px;
+      background: #3f51b5;
+      color: #fff;
+      border: none;
+      cursor: pointer;
+      box-shadow: 0 10px 24px rgba(0,0,0,.2);
+      z-index: 9999;
+      display: grid;
+      place-items: center;
+      font-size: 22px;
+    }
+    .ai-widget{
+      position: fixed;
+      right: 18px;
+      bottom: 84px;
+      width: 360px;
+      max-width: calc(100vw - 36px);
+      height: 520px;
+      max-height: calc(100vh - 120px);
+      background: #fff;
+      border-radius: 16px;
+      box-shadow: 0 14px 40px rgba(0,0,0,.22);
+      overflow: hidden;
+      z-index: 9999;
+      display: none;
+      border: 1px solid rgba(0,0,0,.06);
+    }
+    .ai-widget.open{ display: flex; flex-direction: column; }
+
+    .aiw-header{
+      padding: 12px 14px;
+      background: #f1f3ff;
+      border-bottom: 1px solid rgba(0,0,0,.06);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+    .aiw-title{ display: flex; gap: 10px; align-items: center; }
+    .aiw-badge{
+      width: 32px; height: 32px; border-radius: 10px;
+      background: #3f51b5; color:#fff;
+      display:grid; place-items:center;
+      font-weight: 700;
+    }
+    .aiw-title h3{ font-size: 14px; margin: 0; line-height: 1.2; }
+    .aiw-title small{ display:block; font-size: 12px; color: #556; margin-top: 2px; }
+
+    .aiw-actions{ display:flex; gap: 8px; align-items:center; }
+    .aiw-icon-btn{
+      width: 32px; height: 32px; border-radius: 10px;
+      border: 1px solid rgba(0,0,0,.08);
+      background: #fff;
+      cursor: pointer;
+      display:grid; place-items:center;
+      font-size: 14px;
+    }
+
+    .aiw-body{
+      padding: 12px 12px 0;
+      overflow: auto;
+      flex: 1;
+      background: #fff;
+    }
+    .aiw-msg{ margin: 10px 0; display: flex; gap: 10px; align-items: flex-end; }
+    .aiw-msg.user{ justify-content: flex-end; }
+    .aiw-bubble{
+      max-width: 85%;
+      padding: 10px 12px;
+      border-radius: 14px;
+      line-height: 1.55;
+      font-size: 13px;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+    .aiw-msg.bot .aiw-bubble{
+      background: #f1f3ff;
+      color: #27307a;
+      border-top-left-radius: 6px;
+    }
+    .aiw-msg.user .aiw-bubble{
+      background: #3f51b5;
+      color: #fff;
+      border-top-right-radius: 6px;
+    }
+
+    .aiw-quick{
+      padding: 10px 12px 12px;
+      border-top: 1px solid rgba(0,0,0,.06);
+      background: #fff;
+    }
+    .aiw-quick-title{ font-size: 12px; color: #667; margin-bottom: 8px; }
+    .aiw-chips{ display: flex; flex-wrap: wrap; gap: 8px; }
+    .aiw-chip{
+      border: 1px solid rgba(63,81,181,.35);
+      color: #3f51b5;
+      background: #fff;
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      cursor: pointer;
+    }
+
+    .aiw-footer{
+      padding: 10px 12px;
+      border-top: 1px solid rgba(0,0,0,.06);
+      background: #fff;
+    }
+    .aiw-input-row{ display: flex; gap: 8px; }
+    .aiw-input{
+      flex: 1;
+      border: 1px solid rgba(0,0,0,.12);
+      border-radius: 12px;
+      padding: 10px 10px;
+      font-size: 13px;
+      outline: none;
+    }
+    .aiw-send{
+      border: none;
+      background: #3f51b5;
+      color: #fff;
+      padding: 10px 12px;
+      border-radius: 12px;
+      cursor: pointer;
+      font-size: 13px;
+      min-width: 62px;
+    }
+    .aiw-hint{ margin-top: 8px; font-size: 11px; color: #778; }
+.aiw-bubble a {
+  color: inherit;
+  text-decoration: underline;
+  word-break: break-all;
+}
+
+.aiw-msg.user .aiw-bubble a {
+  color: #fff;
+}
+
+  </style>
+
+  <button class="ai-widget-launcher" id="aiLauncher" aria-label="開啟 AI 客服">💬</button>
+
+  <div class="ai-widget" id="aiWidget" role="dialog" aria-label="AI 客服">
+    <div class="aiw-header">
+      <div class="aiw-title">
+        <div class="aiw-badge">AI</div>
+        <div>
+          <h3>紫荊不分系｜AI 客服</h3>
+          <small>輸入關鍵字，我幫你找到答案</small>
+        </div>
+      </div>
+      <div class="aiw-actions">
+        <button class="aiw-icon-btn" id="aiClear" title="清除對話">🧹</button>
+        <button class="aiw-icon-btn" id="aiClose" title="關閉">✕</button>
+      </div>
+    </div>
+
+    <div class="aiw-body" id="aiBody"></div>
+
+    <div class="aiw-quick">
+      <div class="aiw-quick-title">熱門關鍵字</div>
+      <div class="aiw-chips" id="aiChips"></div>
+    </div>
+
+    <div class="aiw-footer">
+      <div class="aiw-input-row">
+        <input class="aiw-input" id="aiInput" type="text" placeholder="輸入你的問題…（Enter 送出）" />
+        <button class="aiw-send" id="aiSend">送出</button>
+      </div>
+      <div class="aiw-hint">提示：輸入關鍵字（例如：招生、課程、系辦、Q&amp;A、下載表單）。</div>
+    </div>
+  </div>
+
+  <script>
+  /* ==========================================================
+     【問答設定區：你只要改這裡就好】
+     - keywords：使用者輸入包含這些字就會匹配
+     - answer：客服回覆內容
+     - chips：顯示在「熱門關鍵字」的快速按鈕
+     ========================================================== */
+  const QA_RULES = [
+    {
+      chips: "系辦位置",
+      keywords: ["系辦", "位置", "在哪", "辦公室", "聯絡"],
+      answer:
+        "系辦聯絡資訊：\n" +
+        "- 電話：05-2720411#27101、#27102\n" +
+        "- Email：deptids@ccu.edu.tw\n" +
+        "- 辦公室：共同教室大樓西側 210 室\n" +
+        "\n更多資料： https://deptids.ccu.edu.tw/p/404-1154-21734.php?Lang=zh-tw"
+    },
+    {
+      chips: "招生資訊",
+      keywords: ["招生", "入學", "名額", "申請", "審查", "說明會"],
+      answer:
+        "招生資訊官方頁：\n" +
+        "https://deptids.ccu.edu.tw/p/403-1154-393.php?Lang=zh-tw\n" +
+        "\n你也可以先看本頁「招生資訊」卡片的重點連結。"
+    },
+    {
+      chips: "下載表單",
+      keywords: ["下載", "表單", "申請表", "檔案", "法規"],
+      answer:
+        "相關下載/法規入口如下：\n" +
+        "- 學生相關法規：https://deptids.ccu.edu.tw/p/404-1154-17961.php?Lang=zh-tw\n" +
+        "- 教師相關法規：https://deptids.ccu.edu.tw/p/404-1154-17958.php?Lang=zh-tw\n" +
+        "- 相關法規：https://deptids.ccu.edu.tw/p/404-1154-35021.php?Lang=zh-tw\n" +
+        "- 表格：https://deptids.ccu.edu.tw/p/404-1154-17959.php?Lang=zh-tw\n" +
+        "- 個資專區：https://deptids.ccu.edu.tw/p/404-1154-24808.php?Lang=zh-tw\n" +
+        "\n如果你告訴我你要的表單類型（申請/計畫/活動），我可以引導你最快點到。"
+    },
+    {
+      chips: "不分系 Q&A",
+      keywords: ["q&a", "qa", "常見問題", "差異", "畢業", "學位", "分流"],
+      answer:
+        "不分系 Q&A 官方頁：\n" +
+        "https://deptids.ccu.edu.tw/p/403-1154-2212.php?Lang=zh-tw\n" +
+        "\n你也可以直接把問題貼上來，我幫你用關鍵字快速對應。"
+    },
+    {
+      chips: "最新公告",
+      keywords: ["公告", "最新", "消息", "期限", "活動", "成果展"],
+      answer: "最新公告：\nhttps://deptids.ccu.edu.tw/?Lang=zh-tw"
+    },
+    {
+      chips: "介紹影片",
+      keywords: ["影片", "介紹", "youtube", "分享", "不分系"],
+      answer: "介紹影片：\nhttps://www.youtube.com/watch?app=desktop&v=8kfjvu0XHig"
+    },
+    {
+      chips: "課程修課",
+      keywords: ["課程", "修課", "課表", "學什麼", "課程地圖"],
+      answer:
+        "課程與修課建議：\n" +
+        "你可以先看「招生資訊」卡片中的『課程地圖與修課建議』。\n" +
+        "如果你告訴我想走的方向（理工/人社/跨域），我可以幫你整理最該問的重點。"
+    }
+  ];
+
+  /* ===== widget 基本互動（通常不用改） ===== */
+  const $ = (id) => document.getElementById(id);
+
+  const launcher = $("aiLauncher");
+  const widget = $("aiWidget");
+  const closeBtn = $("aiClose");
+  const clearBtn = $("aiClear");
+
+  const body = $("aiBody");
+  const chips = $("aiChips");
+
+  const input = $("aiInput");
+  const sendBtn = $("aiSend");
+
+  //  把訊息中的網址轉成可點超連結
+  function linkify(text) {
+    const urlRegex = /(https?:\/\/[^\s]+)/g;
+    return String(text).replace(urlRegex, (url) => {
+      const safeUrl = url.replace(/"/g, "&quot;");
+      return `<a href="${safeUrl}" target="_blank" rel="noopener noreferrer">${url}</a>`;
+    });
+  }
+
+  //  顯示訊息（保留換行 + 連結可點）
+  function addMsg(role, text) {
+    const row = document.createElement("div");
+    row.className = "aiw-msg " + role;
+
+    const bubble = document.createElement("div");
+    bubble.className = "aiw-bubble";
+    bubble.innerHTML = linkify(text).replace(/\n/g, "<br/>");
+
+    row.appendChild(bubble);
+    body.appendChild(row);
+    body.scrollTop = body.scrollHeight;
+  }
+
+ function matchAnswer(userText) {
+  const t = (userText || "").toLowerCase();
+
+  for (const rule of QA_RULES) {
+    for (const kw of rule.keywords) {
+      if (t.includes(String(kw).toLowerCase())) {
+        return rule.answer;
+      }
+    }
+  }
+
+  return (
+    "我目前可以協助：\n" +
+    "- 招生資訊 / 下載表單\n" +
+    "- 不分系 Q&A\n" +
+    "- 系辦位置與聯絡方式\n" +
+    "- 最新公告 / 介紹影片\n\n" +
+    "你可以再換個關鍵字問看看（例如：『招生』、『系辦在哪』、『下載表單』）。"
+  );
+}
+
+  function send() {
+    const text = input.value.trim();
+    if (!text) return;
+    input.value = "";
+    addMsg("user", text);
+
+    const reply = matchAnswer(text);
+    setTimeout(() => addMsg("bot", reply), 180);
+  }
+
+  function openWidget() {
+    widget.classList.add("open");
+    if (!body.dataset.inited) {
+      addMsg("bot", "你好！我是紫荊不分系 AI 客服🙂\n輸入關鍵字，我可以先用規則幫你找到答案。");
+      body.dataset.inited = "1";
+    }
+    setTimeout(() => input.focus(), 50);
+  }
+
+  function closeWidget() {
+    widget.classList.remove("open");
+  }
+
+  function clearChat() {
+    body.innerHTML = "";
+    body.dataset.inited = "";
+    addMsg("bot", "對話已清除🙂 你可以重新提問。");
+  }
+
+  function renderChips() {
+    chips.innerHTML = "";
+    QA_RULES.forEach((rule) => {
+      if (!rule.chips) return;
+      const b = document.createElement("button");
+      b.type = "button";
+      b.className = "aiw-chip";
+      b.textContent = rule.chips;
+      b.addEventListener("click", () => {
+        openWidget();
+        input.value = rule.chips;
+        send();
+      });
+      chips.appendChild(b);
+    });
+  }
+
+  launcher.addEventListener("click", () => {
+    widget.classList.contains("open") ? closeWidget() : openWidget();
+  });
+  closeBtn.addEventListener("click", closeWidget);
+  clearBtn.addEventListener("click", clearChat);
+
+  sendBtn.addEventListener("click", send);
+  input.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      send();
+    }
+  });
+
+  renderChips();
+</script>
+
+  <!-- ===== AI 客服 Widget END ===== -->
+
+</body>
+</html>
+
+
+
